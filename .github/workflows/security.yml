@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   snyk-security-scan:
@@ -15,6 +16,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Image
         run: |
           docker build -t devsecops-demo .
@@ -25,3 +29,10 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: devsecops-demo
+          args: --severity-threshold=high
+
+      - name: Monitor Project in Snyk
+        run: |
+          snyk container monitor devsecops-demo
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
