@@ -30,9 +30,3 @@ jobs:
         with:
           image: devsecops-demo
           args: --severity-threshold=high
-
-      - name: Monitor Project in Snyk
-        run: |
-          snyk container monitor devsecops-demo
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
